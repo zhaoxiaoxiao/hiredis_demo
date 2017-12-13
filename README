@@ -1,0 +1,20 @@
+
+git clone https://github.com/redis/hiredis.git
+
+vim Makefile
+
+modify PREFIX?=/usr/local PREFIX?=/usr/local/hiredis
+
+make
+
+make install
+
+touch /etc/ld.so.conf.d/hiredis.conf
+
+echo "/usr/local/hiredis/lib" >> /etc/ld.so.conf.d/hiredis.conf
+
+ldconfig
+
+cd examples
+
+gcc example.c -o example -I/usr/local/hiredis/include/hiredis -L/usr/local/hiredis/lib -lhiredis
