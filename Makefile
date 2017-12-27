@@ -1,8 +1,8 @@
 CC	= gcc
 DEBUGFLAG = -g -Wall
 
-INCLUDE	= -I/usr/local/hiredis/include/hiredis
-LIBDIRS	= -L/usr/local/hiredis/lib
+INCLUDE	= -I./hiredis
+LIBDIRS	= -L./hiredis
 LIBS	= -lhiredis
 
 OBJS	= hiredis_modular.o
@@ -10,11 +10,27 @@ TARGET	= hiredis_demo
 
 default:$(TARGET)
 
-clean:
-	rm -f $(TARGET) $(OBJS)
+persist-settings:distclean
+	-(cd ./hiredis && $(MAKE))
+
+.make-prerequisites:
+	@touch $@
+
+.make-prerequisites: persist-settings
 
 $(TARGET):$(OBJS)
 	$(CC) -o $(TARGET) $^ $(LIBDIRS) $(LIBS)
 
-.c.o:
+%.o: %.c .make-prerequisites
 	$(CC) $(DEBUGFLAG) -fPIC -c $< -o $@ $(INCLUDE)
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+
+.PHONY: clean
+
+distclean: clean
+	-(cd ./hiredis && $(MAKE) distclean)
+	-(rm -f .make-*)
+
+.PHONY: distclean

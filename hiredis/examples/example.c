@@ -1,29 +1,10 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <hiredis.h>
 
-#include "hiredis_modular.h"
-
-typedef struct redis_node
-{
-	const char *ip;
-	const char *auth;
-
-	struct redis_node *next;
-	struct redis_node *slave;
-
-	unsigned short po;
-}REDIS_NODE;
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     unsigned int j;
     redisContext *c;
     redisReply *reply;
@@ -95,4 +76,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
