@@ -1,16 +1,16 @@
 CC	= gcc
-DEBUGFLAG = -g -Wall
+DEBUGFLAG = -g #-Wall -ggdb -rdynamic
 
 INCLUDE	= -I./hiredis
-LIBDIRS	= -L./hiredis
-LIBS	= -lhiredis
+LIBDIRS	= #-L./hiredis
+LIBS	= #-lhiredis
 
-OBJS	= hiredis_modular.o
+OBJS	= hiredis_modular.o ./hiredis/libhiredis.a
 TARGET	= hiredis_demo
 
 default:$(TARGET)
 
-persist-settings:distclean
+persist-settings:
 	-(cd ./hiredis && $(MAKE))
 
 .make-prerequisites:
@@ -22,15 +22,16 @@ $(TARGET):$(OBJS)
 	$(CC) -o $(TARGET) $^ $(LIBDIRS) $(LIBS)
 
 %.o: %.c .make-prerequisites
-	$(CC) $(DEBUGFLAG) -fPIC -c $< -o $@ $(INCLUDE)
-
-clean:
-	rm -f $(TARGET) $(OBJS)
+	$(CC) $(DEBUGFLAG) -c $< -o $@ $(INCLUDE)
 
 .PHONY: clean
 
-distclean: clean
-	-(cd ./hiredis && $(MAKE) distclean)
-	-(rm -f .make-*)
+clean:distclean
+	rm -f $(TARGET) $(OBJS)
 
 .PHONY: distclean
+
+distclean: clean
+	-(cd ./hiredis && $(MAKE) clean)
+	-(rm -f .make-*)
+
